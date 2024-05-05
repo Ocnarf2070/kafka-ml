@@ -1,0 +1,1 @@
+from ConsumerRabbitMQ import ConsumerRabbitMQ
