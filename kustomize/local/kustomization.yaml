@@ -2,16 +2,22 @@ resources:
   - resources/namespace.yaml
   - resources/kafka-deployment.yaml
   - resources/kafka-service.yaml
+  - resources/rabbit-deployment.yaml
+  - resources/rabbit-service.yaml
   - "../v1.0"
 
-namespace: kafkaml
+namespace: rabbitml
 
 configMapGenerator:
+  - name: rabbitml-configmap
   - name: kafkaml-configmap
     behavior: merge
     literals:
       - brokers=kafka:9092
+
 images:
   - name: kafka
     newName: docker.io/bitnami/kafka
     newTag: "3.4.0-debian-11-r22"
+  - name: rabbitmq
+    newTag: "rabbitmq:3.12"

@@ -6,6 +6,7 @@ buildMetadata: [managedByLabel, originAnnotations, transformerAnnotations]
 resources:
   - resources/role.yaml
   - resources/kafkaml-configmap.yaml
+  - resources/rabbitml-configmap.yaml
   - resources/backend-deployment.yaml
   - resources/backend-service.yaml
   - resources/frontend-deployment.yaml
