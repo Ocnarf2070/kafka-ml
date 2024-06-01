@@ -19,5 +19,3 @@ images:
   - name: kafka
     newName: docker.io/bitnami/kafka
     newTag: "3.4.0-debian-11-r22"
-  - name: rabbitmq
-    newTag: "rabbitmq:3.12"

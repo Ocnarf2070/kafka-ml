@@ -93,7 +93,7 @@ if __name__ == '__main__':
     
     input_config = json.loads(input_config)
     """Parse the configuration"""
-
+    logging.info("RABBITMQ")
     logging.info("Received environment information (input_bootstrap_servers, output_bootstrap_servers, model_url, input_format, input_config, input_topic, output_topic, group_id) ([%s], [%s], [%s], [%s], [%s], [%s], [%s], [%s], [%s])", 
                 input_bootstrap_servers, output_bootstrap_servers, model_code, model_weights, input_format, str(input_config), input_topic, output_topic, group_id)
     
@@ -114,12 +114,13 @@ if __name__ == '__main__':
         
     #consumer = Consumer({'bootstrap.servers': input_bootstrap_servers,'group.id': 'group_id','auto.offset.reset': 'earliest','enable.auto.commit': False})
     #consumer.subscribe([input_topic])
-    consumer = ConsumerRabbitMQ.__init__(ip=input_bootstrap_servers, topic=input_topic)
+    consumer = ConsumerRabbitMQ(ip=input_bootstrap_servers)
     """Starts a Kafka consumer to receive the information to predict"""
     
     logging.info("Started Kafka consumer in [%s] topic", input_topic)
 
-    output_producer = ProducerRabbitMQ(topic=output_topic, ip=output_bootstrap_servers) #Producer({'bootstrap.servers': output_bootstrap_servers})
+    output_producer = ProducerRabbitMQ(queue=output_topic, ip=output_bootstrap_servers)
+    #Producer({'bootstrap.servers': output_bootstrap_servers})
     """Starts a Kafka producer to send the predictions to the output"""
     
     logging.info("Started Kafka producer in [%s] topic", output_topic)
@@ -130,7 +131,7 @@ if __name__ == '__main__':
     commitedMessages = 0
     """Number of messages commited"""
 
-    consumer.start_consumer(output=output_producer, decoder=decoder, model=model)
+    consumer.start_consumer(queue=input_topic, output=output_producer, decoder=decoder, model=model)
 
   except Exception as e:
     traceback.print_exc()

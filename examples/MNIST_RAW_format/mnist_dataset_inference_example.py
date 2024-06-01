@@ -4,8 +4,8 @@ from kafka import KafkaProducer, KafkaConsumer
 
 logging.basicConfig(level=logging.INFO)
 
-INPUT_TOPIC = 'minst-in'
-OUTPUT_TOPIC = 'minst-out'
+INPUT_TOPIC = 'in_topic'
+OUTPUT_TOPIC = 'out_topic'
 BOOTSTRAP_SERVERS= '127.0.0.1:9094'
 ITEMS_TO_PREDICT = 10
 
@@ -28,3 +28,4 @@ print('\n')
 print('Output consumer: ')
 for msg in output_consumer:
   print (msg.value.decode())
+  if msg is None: break

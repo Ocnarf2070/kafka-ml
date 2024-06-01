@@ -37,8 +37,9 @@ import sys
 import random
 import signal
 
+
 class ProducerRabbitMQ:
-    def __init__(self, user='admin', password='pass', ip='localhost', port=5672, topic='/', queue='pytorch'):
+    def __init__(self, user='guest', password='guest', ip='localhost', port=5672, topic='/', queue='pytorch'):
         credentials = pika.PlainCredentials(user, password)
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(ip, port, topic, credentials))
         self.channel = self.connection.channel()

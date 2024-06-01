@@ -1,6 +1,18 @@
 import pika
 import time
 
+import torch
+from torch import nn
+from torch.optim import optimizer
+from torch.utils.data import DataLoader
+from torchvision.transforms import ToTensor
+
+from ignite.engine import Engine, Events, create_supervised_trainer, create_supervised_evaluator
+from ignite.metrics import *
+from ignite.handlers import ModelCheckpoint
+from ignite.contrib.handlers import TensorboardLogger, global_step_from_engine
+import torchvision.models as models
+
 from decoders import *
 
 output_producer = None
@@ -11,7 +23,7 @@ commitedMessages = 0
 
 class ConsumerRabbitMQ:
 
-    def __init__(self, user='admin', password='pass', ip='localhost', port=5672, topic='/'):
+    def __init__(self, user='guest', password='guest', ip='localhost', port=5672, topic='/'):
         credentials = pika.PlainCredentials(user, password)
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(ip, port, topic, credentials))
         self.channel = self.connection.channel()
