@@ -4,7 +4,7 @@ resources:
   - resources/kafka-service.yaml
   - resources/rabbit-deployment.yaml
   - resources/rabbit-service.yaml
-  - "../v1.0"
+  - "../base"
 
 namespace: rabbitml
 
@@ -13,9 +13,23 @@ configMapGenerator:
   - name: kafkaml-configmap
     behavior: merge
     literals:
+      - tensorflow.training.image=localhost:5000/kafka-ml-tensorflow_model_training
+      - tensorflow.inference.image=localhost:5000/kafka-ml-tensorflow_model_inference
+      - pytorch.training.image=localhost:5000/kafka-ml-pytorch_model_training
+      - pytorch.inference.image=localhost:5000/kafka-ml-pytorch_model_inference
       - brokers=kafka:9092
 
 images:
   - name: kafka
     newName: docker.io/bitnami/kafka
     newTag: "3.4.0-debian-11-r22"
+  - name: kafka-ml-backend
+    newName: localhost:5000/backend
+  - name: kafka-ml-frontend
+    newName: localhost:5000/frontend
+  - name: kafka-ml-kafka_control_logger
+    newName: localhost:5000/kafka_control_logger
+  - name: kafka-ml-pthexecutor
+    newName: localhost:5000/pthexecutor
+  - name: kafka-ml-tfexecutor
+    newName: localhost:5000/tfexecutor
