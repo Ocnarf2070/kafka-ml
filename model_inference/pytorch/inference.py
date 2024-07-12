@@ -17,7 +17,6 @@ from ignite.handlers import ModelCheckpoint
 from ignite.contrib.handlers import TensorboardLogger, global_step_from_engine
 import torchvision.models as models
 
-from confluent_kafka import Producer, Consumer
 import time
 import os
 import logging
@@ -48,14 +47,14 @@ def load_environment_vars():
   """Loads the environment information received from dockers
   bootstrap_servers, trained_model_url, input_topic, output_topic
   Returns:
-      bootstrap_servers (str): list of bootstrap server for the Kafka connection
+      bootstrap_servers (str): list of bootstrap server for the RabbitMQ connection
       model_code (str): URL for downloading the code of the trained model
       model_weights (str): URL for downloading the weights of the trained model
       input_format (str): Format of the input data (RAW, AVRO)
       input_config (str): Configuration contains the information needed to process the input
-      input_topic (str): Kafka topic for the input data
-      output_topic (str): Kafka topic for the output data
-      group_id (str): Kafka group id for consuming data
+      input_topic (str): RabbitMQ topic for the input data
+      output_topic (str): RabbitMQ topic for the output data
+      group_id (str): RabbitMQ group id for consuming data
   """
   input_bootstrap_servers = os.environ.get('INPUT_BOOTSTRAP_SERVERS')
   output_bootstrap_servers = os.environ.get('OUTPUT_BOOTSTRAP_SERVERS')
@@ -114,16 +113,17 @@ if __name__ == '__main__':
         
     #consumer = Consumer({'bootstrap.servers': input_bootstrap_servers,'group.id': 'group_id','auto.offset.reset': 'earliest','enable.auto.commit': False})
     #consumer.subscribe([input_topic])
-    consumer = ConsumerRabbitMQ(ip=input_bootstrap_servers)
-    """Starts a Kafka consumer to receive the information to predict"""
+    (HOST, PORT) = input_bootstrap_servers.split(':')
+    consumer = ConsumerRabbitMQ(ip=HOST, port=int(PORT))
+    """Starts a RabbitMQ consumer to receive the information to predict"""
     
-    logging.info("Started Kafka consumer in [%s] topic", input_topic)
-
-    output_producer = ProducerRabbitMQ(queue=output_topic, ip=output_bootstrap_servers)
+    logging.info("Started RabbitMQ consumer in [%s] topic", input_topic)
+    (HOST, PORT) = output_bootstrap_servers.split(':')
+    output_producer = ProducerRabbitMQ(queue=output_topic, ip=HOST, port=int(PORT))
     #Producer({'bootstrap.servers': output_bootstrap_servers})
-    """Starts a Kafka producer to send the predictions to the output"""
+    """Starts a RabbitMQ producer to send the predictions to the output"""
     
-    logging.info("Started Kafka producer in [%s] topic", output_topic)
+    logging.info("Started RabbitMQ producer in [%s] topic", output_topic)
 
     decoder = DecoderFactory.get_decoder(input_format, input_config)
     """Creates the data decoder"""
@@ -131,7 +131,7 @@ if __name__ == '__main__':
     commitedMessages = 0
     """Number of messages commited"""
 
-    consumer.start_consumer(queue=input_topic, output=output_producer, decoder=decoder, model=model)
+    consumer.start_consumer(queue=input_topic, output=output_producer, decoder=decoder, model=model, device=device)
 
   except Exception as e:
     traceback.print_exc()

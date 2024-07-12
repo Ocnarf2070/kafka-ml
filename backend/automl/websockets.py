@@ -6,6 +6,7 @@ import threading
 import logging
 import uuid
 
+#IMPORTANTE
 class KafkaThread (threading.Thread):
     """ Thread created when a new websocket clients connect. 
         Read data from a Kafka topic and sends the results to Websockets

@@ -37,10 +37,17 @@ import sys
 import random
 import signal
 
+queue_p = ''
+
+
 class ProducerRabbitMQ:
-    def __init__(self, user='admin', password='pass', ip='localhost', port=5672, topic='/', queue='user-tracker'):
+    def __init__(self, user='guest', password='guest', ip='localhost', port=5672, topic='/', queue='pytorch'):
+        global queue_p
+        queue_p = queue
         credentials = pika.PlainCredentials(user, password)
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(ip, port, topic, credentials))
         self.channel = self.connection.channel()
-        self.channel.queue_declare(queue)
-        None
+        self.channel.queue_declare(queue, passive=False, durable=True, auto_delete=False)
+
+    def basic_publish(self, body, header=None):
+        self.channel.basic_publish(exchange='', routing_key=queue_p, body=body, properties=header)

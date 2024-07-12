@@ -29,6 +29,11 @@ spec:
                 configMapKeyRef:
                   name: kafkaml-configmap
                   key: brokers
+            - name: BOOTSTRAP_SERVERS_INFERENCE
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitml-config
+                  key: brokers
             - name: CONTROL_TOPIC
               valueFrom:
                 configMapKeyRef:

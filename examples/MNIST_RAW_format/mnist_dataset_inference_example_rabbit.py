@@ -6,8 +6,8 @@ import signal
 
 logging.basicConfig(level=logging.INFO)
 
-INPUT_TOPIC = 'in_topic'
-OUTPUT_TOPIC = 'out_topic'
+INPUT_TOPIC = 'input'
+OUTPUT_TOPIC = 'output'
 BOOTSTRAP_SERVERS= '127.0.0.1:30672'
 (HOST, PORT) = BOOTSTRAP_SERVERS.split(':')
 ITEMS_TO_PREDICT = 10
@@ -26,8 +26,7 @@ connection_in = pika.BlockingConnection(pika.ConnectionParameters(HOST,
                                                                   int(PORT),
                                                                   '/',
                                                                   credentials))
-channel_in = connection.channel()
-channel_in.queue_declare(INPUT_TOPIC)
+channel_in = connection_in.channel()
 
 
 #########################
@@ -59,5 +58,6 @@ signal.signal(signal.SIGINT, signal_handler)
 print("Waiting for messages, CTRL-C to quit...")
 print("")
 print('\n')
+channel.start_consuming()
 
 

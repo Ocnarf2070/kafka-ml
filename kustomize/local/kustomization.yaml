@@ -9,14 +9,17 @@ resources:
 namespace: rabbitml
 
 configMapGenerator:
-  - name: rabbitml-configmap
+  - name: rabbitml-config
+    behavior: merge
+    literals:
+      - brokers=rabbitmq:5672
   - name: kafkaml-configmap
     behavior: merge
     literals:
-      - tensorflow.training.image=localhost:5000/kafka-ml-tensorflow_model_training
-      - tensorflow.inference.image=localhost:5000/kafka-ml-tensorflow_model_inference
-      - pytorch.training.image=localhost:5000/kafka-ml-pytorch_model_training
-      - pytorch.inference.image=localhost:5000/kafka-ml-pytorch_model_inference
+      - tensorflow.training.image=localhost:5000/tensorflow_model_training
+      - tensorflow.inference.image=localhost:5000/tensorflow_model_inference
+      - pytorch.training.image=localhost:5000/pytorch_model_training
+      - pytorch.inference.image=localhost:5000/pytorch_model_inference
       - brokers=kafka:9092
 
 images:

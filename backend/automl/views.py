@@ -1477,12 +1477,12 @@ class InferenceResultID(generics.ListCreateAPIView):
                         if not is_blank(inference.input_kafka_broker):
                             input_kafka_broker = inference.input_kafka_broker
                         else:
-                            input_kafka_broker = settings.BOOTSTRAP_SERVERS
+                            input_kafka_broker = settings.BOOTSTRAP_SERVERS_INFERENCE
 
                         if not is_blank(inference.output_kafka_broker):
                             output_kafka_broker = inference.output_kafka_broker
                         else:
-                            output_kafka_broker = settings.BOOTSTRAP_SERVERS
+                            output_kafka_broker = settings.BOOTSTRAP_SERVERS_INFERENCE
                         
                         logging.info("Inference deployed in host [%s]", external_host)
                         logging.info("Input kafka broker is [%s] and output kafka broker is [%s]", input_kafka_broker, output_kafka_broker)
@@ -1539,7 +1539,7 @@ class InferenceResultID(generics.ListCreateAPIView):
                             if not is_blank(inference.upper_kafka_broker):
                                 upper_kafka_broker = inference.upper_kafka_broker
                             else:
-                                upper_kafka_broker = settings.BOOTSTRAP_SERVERS
+                                upper_kafka_broker = settings.BOOTSTRAP_SERVERS_INFERENCE
 
                             manifest = {
                                 'apiVersion': 'v1', 

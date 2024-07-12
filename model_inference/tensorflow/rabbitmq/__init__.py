@@ -1,1 +1,2 @@
-from ConsumerRabbitMQ import ConsumerRabbitMQ
+from .ConsumerRabbitMQ import ConsumerRabbitMQ
+from .ProducerRabbitMQ import ProducerRabbitMQ
