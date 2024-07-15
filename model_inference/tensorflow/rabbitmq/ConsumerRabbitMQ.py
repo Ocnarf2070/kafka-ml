@@ -32,10 +32,10 @@ class ConsumerRabbitMQ:
 
     def __init__(self, user='guest', password='guest', ip='localhost', port=5672, topic='/'):
         credentials = pika.PlainCredentials(user, password)
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(ip, port, topic, credentials))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(ip, port, topic, credentials,heartbeat=0))
         self.channel = self.connection.channel()
 
-    def start_consumer(self, queue='pytorch', output=None, decoder=None, model=None, device=None, distributed=False,
+    def start_consumer(self, exchange='tensorflow', queue='tensorflow', output=None, decoder=None, model=None, device=None, distributed=False,
                        limit=10000, upper=None):
         global decoder_g
         global output_producer
@@ -49,7 +49,13 @@ class ConsumerRabbitMQ:
         model_g = model
         distributed_g = distributed
         limit_g = limit
+
+        self.channel.exchange_declare(exchange=exchange, exchange_type="direct", passive=False, durable=True,
+                                      auto_delete=False)
         self.channel.queue_declare(queue, passive=False, durable=True, auto_delete=False)
+
+        self.channel.queue_bind(queue=queue, exchange=exchange, routing_key="standard_key")
+
         self.channel.basic_consume(queue, on_message_callback=queue_callback, auto_ack=True)
         self.channel.start_consuming()
 

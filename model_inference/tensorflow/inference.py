@@ -25,6 +25,7 @@ SLEEP_BETWEEN_REQUESTS = 5
 MAX_MESSAGES_TO_COMMIT = 16
 '''Maximum number of messages to commit at a time'''
 
+
 def load_environment_vars():
   """Loads the environment information received from dockers
   bootstrap_servers, trained_model_url, input_topic, output_topic
@@ -110,14 +111,14 @@ if __name__ == '__main__':
     consumer = Consumer(ip=HOST, port=int(PORT))
     """Starts a Kafka consumer to receive the information to predict"""
     
-    logging.info("Started Kafka consumer in [%s] topic", input_topic)
+    logging.info("Started Rabbit consumer in [%s] topic", input_topic)
 
     #output_producer = Producer({'bootstrap.servers': output_bootstrap_servers})
     (HOST, PORT) = output_bootstrap_servers.split(':')
     output_producer = Producer(queue=output_topic, ip=HOST, port=int(PORT))
     """Starts a Kafka producer to send the predictions to the output"""
     
-    logging.info("Started Kafka producer in [%s] topic", output_topic)
+    logging.info("Started Rabbit producer in [%s] topic", output_topic)
 
     if distributed:
       (HOST, PORT) = upper_bootstrap_servers.split(':')
@@ -133,7 +134,11 @@ if __name__ == '__main__':
 
     commitedMessages = 0
     """Number of messages commited"""
-    consumer.start_consumer(decoder=decoder, output=output_producer, upper=upper_producer, model=model, distributed=distributed, limit=limit)
+    if not distributed:
+      consumer.start_consumer(queue=input_topic, decoder=decoder, output=output_producer, model=model, distributed=distributed)
+    else:
+      consumer.start_consumer(queue=input_topic, decoder=decoder, output=output_producer, upper=upper_producer, model=model,
+                              distributed=distributed, limit=limit)
 
     # while True:
     #   msg = consumer.poll(1.0)
