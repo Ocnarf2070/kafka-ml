@@ -41,7 +41,7 @@ queue_p = ''
 
 
 class ProducerRabbitMQ:
-    def __init__(self, user='guest', password='guest', ip='localhost', port=5672, topic='/', queue='pytorch', exchange='pytorch'):
+    def __init__(self, user='guest', password='guest', ip='localhost', port=5672, topic='/', queue='tensorflow', exchange='tensorflow'):
         global queue_p
         queue_p = queue
         credentials = pika.PlainCredentials(user, password)
