@@ -537,6 +537,8 @@ class DeploymentList(generics.ListCreateAPIView):
                                                         'image': image,
                                                         'name': 'training',
                                                         'env': [{'name': 'BOOTSTRAP_SERVERS', 'value': settings.BOOTSTRAP_SERVERS},
+                                                                {'name': 'BOOTSTRAP_SERVERS_RABBITMQ',
+                                                                 'value': settings.BOOTSTRAP_SERVERS_RABBITMQ},
                                                                 {'name': 'RESULT_URL', 'value': str(os.environ.get('BACKEND_URL'))+'/results/'+str(result.id)},
                                                                 {'name': 'RESULT_ID', 'value': str(result.id)},
                                                                 {'name': 'CONTROL_TOPIC', 'value': settings.CONTROL_TOPIC},
@@ -574,6 +576,8 @@ class DeploymentList(generics.ListCreateAPIView):
                                                         'image': image,
                                                         'name': 'training',
                                                         'env': [{'name': 'BOOTSTRAP_SERVERS', 'value': settings.BOOTSTRAP_SERVERS},
+                                                                {'name': 'BOOTSTRAP_SERVERS_RABBITMQ',
+                                                                 'value': settings.BOOTSTRAP_SERVERS_RABBITMQ},
                                                                 {'name': 'RESULT_URL', 'value': str(os.environ.get('BACKEND_URL'))+'/results/'+str(result.id)},
                                                                 {'name': 'RESULT_ID', 'value': str(result.id)},
                                                                 {'name': 'DEPLOYMENT_ID', 'value': str(deployment.id)},
@@ -656,6 +660,8 @@ class DeploymentList(generics.ListCreateAPIView):
                                                         'image': image,
                                                         'name': 'training',
                                                         'env': [{'name': 'BOOTSTRAP_SERVERS', 'value': settings.BOOTSTRAP_SERVERS},
+                                                                {'name': 'BOOTSTRAP_SERVERS_RABBITMQ',
+                                                                 'value': settings.BOOTSTRAP_SERVERS_RABBITMQ},
                                                                 {'name': 'RESULT_URL', 'value': str(os.environ.get('BACKEND_URL'))+'/results/'+str(result.id)},
                                                                 {'name': 'RESULT_ID', 'value': str(result.id)},
                                                                 {'name': 'CONTROL_TOPIC', 'value': settings.CONTROL_TOPIC},
@@ -723,6 +729,8 @@ class DeploymentList(generics.ListCreateAPIView):
                                                         'image': image,
                                                         'name': 'training',
                                                         'env': [{'name': 'BOOTSTRAP_SERVERS', 'value': settings.BOOTSTRAP_SERVERS},
+                                                                {'name': 'BOOTSTRAP_SERVERS_RABBITMQ',
+                                                                 'value': settings.BOOTSTRAP_SERVERS_RABBITMQ},
                                                                 {'name': 'RESULT_URL', 'value': str(result_urls)},
                                                                 {'name': 'RESULT_ID', 'value': str(result_ids)},
                                                                 {'name': 'CONTROL_TOPIC', 'value': settings.CONTROL_TOPIC},
@@ -764,6 +772,8 @@ class DeploymentList(generics.ListCreateAPIView):
                                                         'image': image,
                                                         'name': 'training',
                                                         'env': [{'name': 'BOOTSTRAP_SERVERS', 'value': settings.BOOTSTRAP_SERVERS},
+                                                                {'name': 'BOOTSTRAP_SERVERS_RABBITMQ',
+                                                                 'value': settings.BOOTSTRAP_SERVERS_RABBITMQ},
                                                                 {'name': 'RESULT_URL', 'value': str(result_urls)},
                                                                 {'name': 'RESULT_ID', 'value': str(result_ids)},
                                                                 {'name': 'CONTROL_TOPIC', 'value': settings.CONTROL_TOPIC},
@@ -810,6 +820,8 @@ class DeploymentList(generics.ListCreateAPIView):
                                                         'image': image,
                                                         'name': 'training',
                                                         'env': [{'name': 'BOOTSTRAP_SERVERS', 'value': settings.BOOTSTRAP_SERVERS},
+                                                                {'name': 'BOOTSTRAP_SERVERS_RABBITMQ',
+                                                                 'value': settings.BOOTSTRAP_SERVERS_RABBITMQ},
                                                                 {'name': 'RESULT_URL', 'value': str(result_urls)},
                                                                 {'name': 'RESULT_ID', 'value': str(result_ids)},
                                                                 {'name': 'CONTROL_TOPIC', 'value': settings.CONTROL_TOPIC},
@@ -853,6 +865,8 @@ class DeploymentList(generics.ListCreateAPIView):
                                                         'image': image,
                                                         'name': 'training',
                                                         'env': [{'name': 'BOOTSTRAP_SERVERS', 'value': settings.BOOTSTRAP_SERVERS},
+                                                                {'name': 'BOOTSTRAP_SERVERS_RABBITMQ',
+                                                                 'value': settings.BOOTSTRAP_SERVERS_RABBITMQ},
                                                                 {'name': 'RESULT_URL', 'value': str(result_urls)},
                                                                 {'name': 'RESULT_ID', 'value': str(result_ids)},
                                                                 {'name': 'CONTROL_TOPIC', 'value': settings.CONTROL_TOPIC},
@@ -1477,12 +1491,12 @@ class InferenceResultID(generics.ListCreateAPIView):
                         if not is_blank(inference.input_kafka_broker):
                             input_kafka_broker = inference.input_kafka_broker
                         else:
-                            input_kafka_broker = settings.BOOTSTRAP_SERVERS_INFERENCE
+                            input_kafka_broker = settings.BOOTSTRAP_SERVERS_RABBITMQ
 
                         if not is_blank(inference.output_kafka_broker):
                             output_kafka_broker = inference.output_kafka_broker
                         else:
-                            output_kafka_broker = settings.BOOTSTRAP_SERVERS_INFERENCE
+                            output_kafka_broker = settings.BOOTSTRAP_SERVERS_RABBITMQ
                         
                         logging.info("Inference deployed in host [%s]", external_host)
                         logging.info("Input kafka broker is [%s] and output kafka broker is [%s]", input_kafka_broker, output_kafka_broker)
@@ -1539,7 +1553,7 @@ class InferenceResultID(generics.ListCreateAPIView):
                             if not is_blank(inference.upper_kafka_broker):
                                 upper_kafka_broker = inference.upper_kafka_broker
                             else:
-                                upper_kafka_broker = settings.BOOTSTRAP_SERVERS_INFERENCE
+                                upper_kafka_broker = settings.BOOTSTRAP_SERVERS_RABBITMQ
 
                             manifest = {
                                 'apiVersion': 'v1', 

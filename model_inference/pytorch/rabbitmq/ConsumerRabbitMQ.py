@@ -60,8 +60,7 @@ class ConsumerRabbitMQ:
 
         self.channel.basic_consume(queue, on_message_callback=queue_callback, auto_ack=True)
 
-
-self.channel.start_consuming()
+        self.channel.start_consuming()
 
 
 def queue_callback(channel, method, properties, body):
