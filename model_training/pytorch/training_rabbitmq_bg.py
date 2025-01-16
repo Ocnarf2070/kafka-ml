@@ -30,8 +30,10 @@ def load_environment_vars():
     bootstrap_servers_kafka = os.environ.get('BOOTSTRAP_SERVERS')
     bootstrap_servers_rabbitmq = os.environ.get('BOOTSTRAP_SERVERS_RABBITMQ')
     control_topic = os.environ.get('CONTROL_TOPIC')
+    rabbit_user=os.environ.get('RABBITMQ_USER')
+    rabbit_password=os.environ.get('RABBITMQ_PSW')
 
-    return bootstrap_servers_kafka, bootstrap_servers_rabbitmq, control_topic
+    return bootstrap_servers_kafka, bootstrap_servers_rabbitmq, control_topic, rabbit_user, rabbit_password
 
 
 def close():
@@ -129,10 +131,10 @@ if __name__ == '__main__':
             )
         """Configures the logging"""
 
-        bootstrap_servers_kafka, bootstrap_servers_rabbitmq, control_topic = load_environment_vars()
+        bootstrap_servers_kafka, bootstrap_servers_rabbitmq, control_topic, rabbit_user, rabbit_psw = load_environment_vars()
         """Loads the environment information"""
         (HOST, PORT) = bootstrap_servers_rabbitmq.split(':')
-        credentials = pika.PlainCredentials("guest", "guest")
+        credentials = pika.PlainCredentials(rabbit_user, rabbit_psw)
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(HOST, int(PORT), '/', credentials, heartbeat=0))
         consumer = connection.channel()

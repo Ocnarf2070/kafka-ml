@@ -34,6 +34,16 @@ spec:
                 configMapKeyRef:
                   name: rabbitml-config
                   key: brokers
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: username
+            - name: RABBITMQ_PSW
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: password
             - name: CONTROL_TOPIC
               valueFrom:
                 configMapKeyRef:

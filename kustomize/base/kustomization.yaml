@@ -4,6 +4,7 @@ kind: Kustomization
 buildMetadata: [managedByLabel, originAnnotations, transformerAnnotations]
 
 resources:
+  - resources/secrets.yaml
   - resources/role.yaml
   - resources/kafkaml-configmap.yaml
   - resources/rabbitml-configmap.yaml

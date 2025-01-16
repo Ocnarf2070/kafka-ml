@@ -46,8 +46,12 @@ def load_environment_vars():
   input_topic = os.environ.get('INPUT_TOPIC')
   output_topic = os.environ.get('OUTPUT_TOPIC')
   group_id = os.environ.get('GROUP_ID')
+  rabbit_user = os.environ.get('RABBITMQ_USER')
+  rabbit_password = os.environ.get('RABBITMQ_PSW')
 
-  return (input_bootstrap_servers, output_bootstrap_servers, model_url, input_format, input_config, input_topic, output_topic, group_id)
+  return (input_bootstrap_servers, output_bootstrap_servers, model_url, input_format, input_config, input_topic,
+          output_topic, group_id, rabbit_user, rabbit_password)
+
 
 if __name__ == '__main__':
   try:
@@ -71,7 +75,8 @@ if __name__ == '__main__':
     for gpu in gpus:
       tf.config.experimental.set_memory_growth(gpu, True)
 
-    input_bootstrap_servers, output_bootstrap_servers, model_url, input_format, input_config, input_topic, output_topic, group_id = load_environment_vars()
+    (input_bootstrap_servers, output_bootstrap_servers, model_url, input_format, input_config, input_topic, output_topic,
+     group_id, rabbit_user, rabbit_password) = load_environment_vars()
     """Loads the environment information"""
     
     upper_bootstrap_servers = os.environ.get('UPPER_BOOTSTRAP_SERVERS')
@@ -108,21 +113,21 @@ if __name__ == '__main__':
     #consumer = Consumer({'bootstrap.servers': input_bootstrap_servers, 'group.id': group_id, 'auto.offset.reset': 'earliest', 'enable.auto.commit': False})
     #consumer.subscribe([input_topic])
     (HOST, PORT) = input_bootstrap_servers.split(':')
-    consumer = Consumer(ip=HOST, port=int(PORT))
+    consumer = Consumer(ip=HOST, port=int(PORT), user=rabbit_user, password=rabbit_password)
     """Starts a Kafka consumer to receive the information to predict"""
     
     logging.info("Started Rabbit consumer in [%s] topic", input_topic)
 
     #output_producer = Producer({'bootstrap.servers': output_bootstrap_servers})
     (HOST, PORT) = output_bootstrap_servers.split(':')
-    output_producer = Producer(queue=output_topic, ip=HOST, port=int(PORT))
+    output_producer = Producer(queue=output_topic, ip=HOST, port=int(PORT), user=rabbit_user, password=rabbit_password)
     """Starts a Kafka producer to send the predictions to the output"""
     
     logging.info("Started Rabbit producer in [%s] topic", output_topic)
 
     if distributed:
       (HOST, PORT) = upper_bootstrap_servers.split(':')
-      upper_producer = Producer(queue=output_upper, ip=HOST, port=int(PORT))
+      upper_producer = Producer(queue=output_upper, ip=HOST, port=int(PORT), user=rabbit_user, password=rabbit_password)
 
       #upper_producer = Producer({'bootstrap.servers': upper_bootstrap_servers})
       """Starts a Kafka producer to send the predictions to upper model"""
